@@ -53,13 +53,13 @@ public class ReviewService {
 
     public Review createReview(Psychologist psychologist, ReviewDTO reviewDTO, Principal principal){
         Review review = reviewDtoToReview(reviewDTO, principal, psychologist);
+        double newEstimations = (psychologist.getEstimation() * psychologist.getReviews().size() + reviewDTO.getEstimation()) / (psychologist.getReviews().size() + 1);
         System.out.println("333333333 "+review);
         review.setClient(clientService.getCurrentClient(principal));
         review.setPsychologist(psychologist);
 
         Review savedReview = reviewRepository.save(review);
 
-        double newEstimations = (psychologist.getEstimation() * psychologist.getReviews().size() + reviewDTO.getEstimation()) / (psychologist.getReviews().size() + 1);
         psychologist.setEstimation(newEstimations);
         psyRepository.save(psychologist);
 
