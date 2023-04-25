@@ -55,8 +55,8 @@ public class Client implements UserDetails {
     @OneToMany(mappedBy = "client")
     private List<Appointment> appointments;
 
-    @OneToOne(mappedBy = "client")
-    private RefreshToken refreshToken;
+//    @OneToOne(mappedBy = "client")
+//    private RefreshToken refreshToken;
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

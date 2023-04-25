@@ -6,6 +6,7 @@ import com.example.helppsy.entity.Appointment;
 import com.example.helppsy.entity.Client;
 import com.example.helppsy.entity.enums.ERole;
 import com.example.helppsy.payload.request.RegisterRequest;
+import com.example.helppsy.repository.AppointmentRepository;
 import com.example.helppsy.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,17 +31,20 @@ public class ClientService {
     private ClientRepository clientRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private AppointmentService appointmentService;
+    private AppointmentRepository appointmentRepository;
     private MailSender mailSender;
 
     @Autowired
     public ClientService(ClientRepository clientRepository,
                          AppointmentService appointmentService,
                          BCryptPasswordEncoder bCryptPasswordEncoder,
-                         MailSender mailSender){
+                         MailSender mailSender,
+                         AppointmentRepository appointmentRepository){
         this.clientRepository = clientRepository;
         this.appointmentService = appointmentService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.mailSender = mailSender;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public ClientDTO createClient(RegisterRequest registerRequest){
@@ -58,7 +63,7 @@ public class ClientService {
 
         String message = String.format(
                 "Hello, %s! \n" +
-                        "Welcome to psyHelper. Please, visit next link: http://localhost:8081/api/auth/activate/%s",
+                        "Welcome to psyHelper. Please, visit next link: http://localhost:4200/activate/%s",
                 client.getUsername(), client.getActivationCode()
         );
         mailSender.send(client.getEmail(), "Activation code", message);
@@ -101,8 +106,17 @@ public class ClientService {
     }
 
     public List<Appointment> currentAppointments(Principal principal){
-        return getClientByPrincipal(principal).getAppointments()
-                .stream().filter(e -> e.isStatus())
+        long twoHoursInMillieSeconds = 7200000;
+        List<Appointment> appointments = getClientByPrincipal(principal).getAppointments();
+        appointments.forEach(e -> {
+            if ((e.getDate().getTime() + twoHoursInMillieSeconds) <= System.currentTimeMillis()){
+                e.setStatus(false);
+                appointmentRepository.save(e);
+            }
+        });
+
+        return appointments.stream()
+                .filter(e -> e.isStatus())
                 .collect(Collectors.toList());
     }
 
