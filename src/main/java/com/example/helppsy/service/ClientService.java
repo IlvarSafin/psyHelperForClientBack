@@ -169,6 +169,4 @@ public class ClientService {
         return appointments.stream()
                 .map(Appointment::getPsychologist).distinct().collect(Collectors.toList());
     }
-
-
 }
