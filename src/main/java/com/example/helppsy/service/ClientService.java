@@ -4,6 +4,7 @@ import com.example.helppsy.dto.AppointmentClientDTO;
 import com.example.helppsy.dto.ClientDTO;
 import com.example.helppsy.entity.Appointment;
 import com.example.helppsy.entity.Client;
+import com.example.helppsy.entity.Psychologist;
 import com.example.helppsy.entity.enums.ERole;
 import com.example.helppsy.payload.request.RegisterRequest;
 import com.example.helppsy.repository.AppointmentRepository;
@@ -19,10 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,4 +159,16 @@ public class ClientService {
         clientRepository.save(client);
         return client.isStatus();
     }
+
+    public List<Psychologist> psysByDate(){
+        List<Appointment> appointments = appointmentRepository.findAll()
+                .stream().filter(Appointment::isStatus).toList();
+
+        Collections.sort(appointments, (a, b) -> (int) (a.getDate().getTime() - b.getDate().getTime()));
+
+        return appointments.stream()
+                .map(Appointment::getPsychologist).distinct().collect(Collectors.toList());
+    }
+
+
 }
