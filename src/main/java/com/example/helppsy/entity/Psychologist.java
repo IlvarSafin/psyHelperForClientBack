@@ -29,7 +29,7 @@ public class Psychologist{
     @Column(name = "name")
     private String name;
     @Column(name = "estimation")
-    private double estimation;
+    private Double estimation;
     @Column(name = "status")
     private boolean status;
     @Column(name = "email")
