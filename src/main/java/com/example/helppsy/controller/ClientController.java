@@ -169,6 +169,23 @@ public class ClientController {
                 .body("OK");
     }
 
+//    @PostMapping("/filterSoon")
+//    public ResponseEntity<?> freeSoonPsy(){
+//        List<PsychologistDTO> psychologistDTOs = psyService.psysByDate()
+//                .stream()
+//                .map(e -> psyService.psychologistToPsychologistDTO(e))
+//                .toList();
+//        return new ResponseEntity<>(psychologistDTOs, HttpStatus.OK);
+//    }
+
+    @PostMapping("/fillMoney")
+    public ResponseEntity<Object> fillMoney(Principal principal,
+                                            @RequestBody double money){
+        ClientDTO client = clientService
+                .clientToClientDTO(clientService.fillMoneySave(principal, money));
+        return new ResponseEntity<>(client, HttpStatus.OK);
+    }
+
 
     @ExceptionHandler
     private ResponseEntity<ClientErrorResponse> notFoundId(ClientNotFoundException cnfe){

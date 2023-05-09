@@ -17,6 +17,7 @@ public class ClientDTO {
     private String name;
     private String email;
     private String password;
+    private double money;
     private byte[] photo;
 
     private List<AppointmentClientDTO> appointmentsCl;

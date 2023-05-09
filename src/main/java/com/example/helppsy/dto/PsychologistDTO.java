@@ -16,6 +16,8 @@ public class PsychologistDTO{
     private String name;
     private double estimation;
     private String description;
+    private String sex;
+    private Double price;
     private byte[] photo;
 
     private List<ReviewDTO> reviewsCl;

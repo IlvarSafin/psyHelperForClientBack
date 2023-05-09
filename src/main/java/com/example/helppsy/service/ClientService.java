@@ -145,6 +145,7 @@ public class ClientService {
                 client.getName(),
                 client.getEmail(),
                 client.getPassword(),
+                client.getMoney(),
                 client.getPhoto(),
                 appointmentClientDTOs
         );
@@ -160,13 +161,9 @@ public class ClientService {
         return client.isStatus();
     }
 
-    public List<Psychologist> psysByDate(){
-        List<Appointment> appointments = appointmentRepository.findAll()
-                .stream().filter(Appointment::isStatus).toList();
-
-        Collections.sort(appointments, (a, b) -> (int) (a.getDate().getTime() - b.getDate().getTime()));
-
-        return appointments.stream()
-                .map(Appointment::getPsychologist).distinct().collect(Collectors.toList());
+    public Client fillMoneySave(Principal principal, double money){
+        Client client = getCurrentClient(principal);
+        client.setMoney(client.getMoney() + money);
+        return clientRepository.save(client);
     }
 }

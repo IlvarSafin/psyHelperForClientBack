@@ -23,6 +23,7 @@ create table client (
     password varchar(255),
     photo bytea,
     status boolean,
+    money double precision,
     primary key (id)
 );
 
@@ -47,6 +48,8 @@ create table psychologist (
     photo bytea,
     registered boolean,
     status boolean,
+    sex varchar(20),
+    price double precision,
     primary key (id)
 );
 
